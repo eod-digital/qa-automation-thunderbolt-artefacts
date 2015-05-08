@@ -5,37 +5,29 @@ import util.FactoryUtil;
 public class UserFactory {
     private static FactoryUtil factoryUtil = new FactoryUtil();
 
-    private static String[] FIRST_NAME = {"Peter", "Naif", "Shu'ayb", "Sarah", "Leanna", "Theodoric", "Chukwubuikem", "Udobata", "Narciso", "Adelfo", "Sha'ban", "Lubomierz"};
-    private static String[] LAST_NAME = {"Dyer", "Haddad", "Czerwinski", "Kruger", "Kuefer", "Paterson", "T'ang", "Chukwumoge", "Onyemauchechukwu", "Barros", "Lai", "Yamauchi"};
+    private final static String[] FIRST_NAME = new String[]{"Peter", "Naif", "Shu'ayb", "Sarah", "Leanna", "Theodoric", "Chukwubuikem", "Udobata", "Narciso", "Adelfo", "Sha'ban", "Lubomierz"};
+    private final static String[] LAST_NAME = new String[]{"Dyer", "Haddad", "Czerwinski", "Kruger", "Kuefer", "Paterson", "T'ang", "Chukwumoge", "Onyemauchechukwu", "Barros", "Lai", "Yamauchi"};
+    private final static String EMAIL = "@test-mail.com";
 
-    public String firstName = factoryUtil.getRandomString(FIRST_NAME);
-    public String lastName = factoryUtil.getRandomString(LAST_NAME);
-    public String username = "";
-    public String email = firstName.replace("'","").toLowerCase() + "." + lastName.replace("'","").toLowerCase() + "@test-mail.com";
-    public String password = "";
-
-    public String getFirstName() {
-        return firstName;
+    public static User addNewUser() {
+        String firstName = getFirstName();
+        String lastName = getLastName();
+        String email = getEmail();
+        String username = getUsername();
+        
+        return new User.Builder()
+            .setFirstName(firstName)
+            .setLastName(lastName)
+            .setEmail(email)
+            .setUsername(username)
+            .setPassword("P@55w0rd!")
+            .setDomain(domain)
+            .setRole(role)
+            .build();
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-//    public static void main(String[] args) {
-//        System.out.println("Hi, my name is: " + getFirstName() + " " + getLastName());
-//        System.out.println("And my email is: " + getEmail());
-//    }
+    private static String getFirstName() { return factoryUtil.getRandomString(FIRST_NAME); }
+    private static String getLastName() { return factoryUtil.getRandomString(LAST_NAME); }
+    private static String getEmail()  { return firstName.replace("'","").toLowerCase() + "." + lastName.replace("'","").toLowerCase() + EMAIL; }
+    private static String getUsername()  { return factoryUtil.generateRandomUsername(); }
 }
