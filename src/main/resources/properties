@@ -1,3 +1,4 @@
-mongoDBHost=${mongoDBHost}
+cloudHost=${cloudHost}
+localhost=${localhost}
 mongoDBPort=${mongoDBPort}
 implicitTimeout=${implicitTimeout}

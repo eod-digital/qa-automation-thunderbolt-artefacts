@@ -4,8 +4,12 @@ import model.Theme;
 import util.FactoryUtil;
 
 public class ThemeFactory {
-    private static FactoryUtil factoryUtil = new FactoryUtil();
+    private static FactoryUtil factoryUtil;
     private final static String[] THEMES = new String[] {"Music", "Sports", "Lifestyle", "Movies", "News & Info", "Documentary", "Entertainment", "Comedy"};
+
+    public ThemeFactory() {
+        factoryUtil = new FactoryUtil();
+    }
 
 //    public static Theme createNewTheme() {
 //        String title = getRandomTheme();

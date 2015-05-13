@@ -27,7 +27,8 @@
     </dependencies>
 
     <properties>
-        <mongoDBHost>http://ps420558.dreamhost.com</mongoDBHost>
+        <cloudHost>http://ps420558.dreamhost.com</cloudHost>
+        <localhost>http://localhost</localhost>
         <mongoDBPort>27017</mongoDBPort>
         <implicitTimeout>30</implicitTimeout>
     </properties>

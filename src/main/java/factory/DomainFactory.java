@@ -4,9 +4,12 @@ import model.Domain;
 import util.FactoryUtil;
 
 public class DomainFactory {
-    private static FactoryUtil factoryUtil = new FactoryUtil();
+    private static FactoryUtil factoryUtil;
     private final static String[] EXTENSIONS = new String[] {"tv", "com", "fm", "net", "us", "video", "io", "co", "ws", "org"};
 
+    public DomainFactory() {
+        factoryUtil = new FactoryUtil();
+    }
 //    public Domain addNewDomain() {
 //        String name = generateRandomDomainName();
 //        String token = generateDomainToken();
