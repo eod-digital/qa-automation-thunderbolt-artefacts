@@ -29,6 +29,7 @@
     <properties>
         <mongoDBHost>http://ps420558.dreamhost.com</mongoDBHost>
         <mongoDBPort>27017</mongoDBPort>
+        <implicitTimeout>30</implicitTimeout>
     </properties>
 
 </project>

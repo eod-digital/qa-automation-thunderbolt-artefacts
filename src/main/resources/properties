@@ -1,1 +1,3 @@
 mongoDBHost=${mongoDBHost}
+mongoDBPort=${mongoDBPort}
+implicitTimeout=${implicitTimeout}
