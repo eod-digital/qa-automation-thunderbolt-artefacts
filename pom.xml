@@ -7,6 +7,12 @@
     <groupId>qa-automation-thunderbolt-artefacts</groupId>
     <artifactId>qa-automation-thunderbolt-artefacts</artifactId>
     <version>1.0-SNAPSHOT</version>
+    
+    <scm>
+         <connection>scm:git:ssh//git@github.com/eod-digital/qa-automation-thunderbolt-artefacts.git</connection>
+         <developerConnection>scm:git:ssh//git@github.com/eod-digital/qa-automation-thunderbolt-artefacts.git</developerConnection>
+         <url>origin</url>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -24,13 +30,22 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.4</version>
+        </dependency>
     </dependencies>
 
     <properties>
-        <cloudHost>http://ps420558.dreamhost.com</cloudHost>
-        <localhost>http://localhost</localhost>
-        <mongoDBPort>27017</mongoDBPort>
-        <implicitTimeout>30</implicitTimeout>
+        <cloud.host>http://ps420558.dreamhost.com</cloud.host>
+        <local.host>http://localhost</local.host>
+        <mongo.db.connection>${cloud.host}:27017/</<mongo.db.connection>
+        <default.wait.time>30</default.wait.time>
+        <selenium.grid.url>${cloud.host}:4444/wd/hub/</selenium.grid.url>
+        <appium.grid.url>${cloud.host}:4723/</appium.grid.url>
+        <appium.local.url>${local.host}:4723/</appium.local.url>
+        <desired.capabilities.browser>chrome</desired.capabilities.browser>
     </properties>
 
 </project>
