@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class PropertiesUtil {
-    private Map properties = new HashMap<String, String>();
+    private static Map properties = new HashMap<>();
 
-    public String getProperty(String key) {
+    public static String getProperty(String key) {
         return (String)properties.get(key);
     }
 
@@ -14,19 +14,19 @@ public final class PropertiesUtil {
         properties.put(key, value);
     }
     
-    public static String getDesiredBrowser() {
-    return getProperty("desired.browser");
+    public static String getDesiredCapabilities() {
+    return getProperty("desired.capabilities");
 }
-public static String getWebDriverLocation() {
-    return getProperty("webDriver.location");
-}
-public static String getDefaultWaitTime() {
-    return getProperty("default.wait.time");
-}
-public static String getWebDriverGridUrl() {
-    return getProperty("webDriver.grid.url");
-}
-public static String getEnvironment() {
-    return getProperty("environment");
-}
+    public static String getSeleniumDriverLocation() {
+        return getProperty("selenium.driver.location");
+    }
+    public static String getDefaultWaitTime() {
+        return getProperty("default.wait.time");
+    }
+    public static String getSeleniumGridUrl() {
+        return getProperty("selenium.grid.url");
+    }
+    public static String getEnvironment() {
+        return getProperty("environment");
+    }
 }

@@ -1,4 +1,12 @@
-cloudHost=${cloudHost}
-localhost=${localhost}
-mongoDBPort=${mongoDBPort}
-implicitTimeout=${implicitTimeout}
+cloud.host=${cloud.host}
+local.host=${local.host}
+mongo.db.connection=${mongo.db.connection}
+default.wait.time=${default.wait.time}
+selenium.grid.url=${selenium.grid.url}
+appium.grid.url=${appium.grid.url}
+appium.local.url=${appium.local.url}
+desired.capabilities=${desired.capabilities}
+selenium.driver.location=${selenium.driver.location}
+environment=${environment}
+appium.grid.url=${appium.grid.url}
+appium.local.url=${appium.local.url}

@@ -1,44 +1,39 @@
 package service;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebElement;
+import factory.WebDriverFactory;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.Wait;
-import util.PropertiesUtil;
+import org.openqa.selenium.remote.RemoteWebElement;
+import org.openqa.selenium.support.ui.*;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static util.PropertiesUtil.getDefaultWaitTime;
+import static util.PropertiesUtil.getProperty;
+
 public class WebDriverService {
-    private RemoteWebDriver driver;
-    private Wait<RemoteWebDriver> wait;
-    private PropertiesUtil propertiesUtil;
-    private long WAIT_TIME;
-    private Actions actions;
+    private static RemoteWebDriver driver;
+    private static Wait<RemoteWebDriver> wait;
+    private static Actions actions;
 
     public WebDriverService() {
-        this.propertiesUtil = new PropertiesUtil();
-        this.WAIT_TIME = Long.parseLong(propertiesUtil.getProperty("deafult.wait.time"));
-        this.driver = WebDriverFactory.initiateRemoteWebDriver();
-        this.actions = new Actions(driver);
+        long WAIT_TIME = Long.parseLong(getProperty("default.wait.time"));
+        driver = WebDriverFactory.initiateRemoteWebDriver();
+        actions = new Actions(driver);
+        wait = new FluentWait<>(driver)
+                .withTimeout(WAIT_TIME, TimeUnit.SECONDS)
+                .pollingEvery(2, TimeUnit.SECONDS)
+                .ignoring(StaleElementReferenceException.class)
+                .ignoring(NoSuchElementException.class);
     }
 
     /*
         custom fluent implicit conditional waits.
      */
-    private Wait<RemoteWebDriver> fluentImplicitWait() {
-        wait = new FluentWait<RemoteWebDriver>(driver)
-                .withTimeout(WAIT_TIME, TimeUnit.SECONDS)
-                .pollingEvery(2, TimeUnit.SECONDS)
-                .ignoring(StaleElementReferenceException.class)
-                .ignoring(NoSuchElementException.class);
-        return wait;
+    public List<WebElement> waitUntilVisibilityOfAllElements(final By identifier) {
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(identifier));
     }
     public RemoteWebElement waitUntilVisibilityOfElement(final WebElement element) {
         return (RemoteWebElement) wait.until(ExpectedConditions.visibilityOf(element));
@@ -46,11 +41,11 @@ public class WebDriverService {
     public RemoteWebElement waitUntilElementVisibilityIsRefreshed(final WebElement element) {
         return (RemoteWebElement) wait.until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOf(element)));
     }
-    public boolean waitUntilInvisibilityOfElement(final WebElement element) {
-        return wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(element)));
-    }
     public RemoteWebElement waitUntilElementIsClickable(final WebElement element) {
         return (RemoteWebElement) wait.until(ExpectedConditions.elementToBeClickable(waitUntilVisibilityOfElement(element)));
+    }
+    public boolean waitUntilInvisibilityOfElement(final WebElement element) {
+        return wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(element)));
     }
     public boolean waitUntilTextIsPresentInElement(final WebElement element, final String text) {
         return wait.until(ExpectedConditions.textToBePresentInElement(waitUntilVisibilityOfElement(element), text));
@@ -64,10 +59,6 @@ public class WebDriverService {
     public boolean waitUntilInvisibilityOfAllElements(final List<WebElement> elements) {
         return wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfAllElements(elements)));
     }
-    public List<WebElement> waitUntilVisibilityOfAllElements(final By identifier) {
-        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(identifier));
-    }
-
 
     /*
         custom element finders
@@ -96,32 +87,43 @@ public class WebDriverService {
         Select select = new Select(waitUntilVisibilityOfElement(element));
         select.selectByVisibleText(visibleText);
     }
-    public void navigateTo(String url) {
-        driver.navigate().to(url);
+    public void navigateTo(final String url) {
+        driver.navigate()
+                .to(url);
+    }
+    public void dragAndDrop(final WebElement source, final WebElement target) {
+        actions.dragAndDrop(waitUntilVisibilityOfElement(source), waitUntilVisibilityOfElement(target))
+                .perform();
     }
     public void maximiseWindow() {
-        driver.manage().window().maximize();
+        driver.manage().window()
+                .maximize();
     }
-    
-    private void waitForNewWindowToOpen() {
-        new WebDriverWait(webDriver, Integer.valueOf(PropertiesUtil.getWebDriverWaitTime())) {
+
+    /*
+
+     */
+    public void switchToNewBrowserWindow() {
+        getMainBrowserWindow();
+        waitUntilNewBrowserWindowIsDisplay();
+        for (String browser : driver.getWindowHandles()) {
+            driver.switchTo().window(browser);
+        }
+    }
+    public void switchToMainBrowserWindow() {
+        driver.switchTo().window(getMainBrowserWindow());
+    }
+
+    private void waitUntilNewBrowserWindowIsDisplay() {
+        new WebDriverWait(driver, Long.valueOf(getDefaultWaitTime())) {
         }.until(new ExpectedCondition<Boolean>() {
             @Override
-            public Boolean apply(WebDriver driver) {
+            public Boolean apply(WebDriver webDriver) {
                 return (driver.getWindowHandles().size() > 1);
             }
         });
     }
-    
-public void switchToNewWindow() {
-        mainWindowHandle = webDriver.getWindowHandle();
-        waitForNewWindowToOpen();
-        for (String windowHandle : webDriver.getWindowHandles()) {
-            webDriver.switchTo().window(windowHandle);
-        }
-    }
-
-    public void switchToMainWindow() {
-        webDriver.switchTo().window(mainWindowHandle);
+    private String getMainBrowserWindow() {
+        return driver.getWindowHandle();
     }
 }
