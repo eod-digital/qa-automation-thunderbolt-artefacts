@@ -1,4 +1,4 @@
-package util;
+package com.eod.digital.util;
 
 import java.util.HashMap;
 import java.util.Map;

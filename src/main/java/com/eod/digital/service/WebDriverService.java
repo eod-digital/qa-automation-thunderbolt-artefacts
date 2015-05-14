@@ -1,6 +1,6 @@
-package service;
+package com.eod.digital.service;
 
-import factory.WebDriverFactory;
+import com.eod.digital.factory.WebDriverFactory;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -10,8 +10,8 @@ import org.openqa.selenium.support.ui.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static util.PropertiesUtil.getDefaultWaitTime;
-import static util.PropertiesUtil.getProperty;
+import static com.eod.digital.util.PropertiesUtil.getDefaultWaitTime;
+import static com.eod.digital.util.PropertiesUtil.getProperty;
 
 public class WebDriverService {
     private static RemoteWebDriver driver;
