@@ -13,4 +13,20 @@ public final class PropertiesUtil {
     public void setProperty(String key, String value) {
         properties.put(key, value);
     }
+    
+    public static String getDesiredBrowser() {
+    return getProperty("desired.browser");
+}
+public static String getWebDriverLocation() {
+    return getProperty("webDriver.location");
+}
+public static String getDefaultWaitTime() {
+    return getProperty("default.wait.time");
+}
+public static String getWebDriverGridUrl() {
+    return getProperty("webDriver.grid.url");
+}
+public static String getEnvironment() {
+    return getProperty("environment");
+}
 }
