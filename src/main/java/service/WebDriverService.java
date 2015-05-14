@@ -19,54 +19,63 @@ public class WebDriverService {
     private RemoteWebDriver driver;
     private Wait<RemoteWebDriver> wait;
     private PropertiesUtil propertiesUtil;
-    private long TIMEOUT;
+    private long WAIT_TIME;
     private Actions actions;
 
     public WebDriverService() {
         this.propertiesUtil = new PropertiesUtil();
-        this.TIMEOUT = Long.parseLong(propertiesUtil.getProperty("implicitTimeout"));
-//        this.driver = new RemoteWebDriver();
+        this.WAIT_TIME = Long.parseLong(propertiesUtil.getProperty("deafult.wait.time"));
+        this.driver = WebDriverFactory.initiateRemoteWebDriver();
         this.actions = new Actions(driver);
     }
 
     /*
         custom fluent implicit conditional waits.
      */
-    public Wait<RemoteWebDriver> fluentImplicitWait() {
+    private Wait<RemoteWebDriver> fluentImplicitWait() {
         wait = new FluentWait<RemoteWebDriver>(driver)
-                .withTimeout(TIMEOUT, TimeUnit.SECONDS)
+                .withTimeout(WAIT_TIME, TimeUnit.SECONDS)
                 .pollingEvery(2, TimeUnit.SECONDS)
                 .ignoring(StaleElementReferenceException.class)
                 .ignoring(NoSuchElementException.class);
         return wait;
     }
-    public void waitUntilVisibilityOfElement(final WebElement element) {
-        wait.until(ExpectedConditions.visibilityOf(element));
+    public RemoteWebElement waitUntilVisibilityOfElement(final WebElement element) {
+        return (RemoteWebElement) wait.until(ExpectedConditions.visibilityOf(element));
     }
-    public void waitUntilVisibilityOfAllElements(final List<WebElement> elements) {
-        wait.until(ExpectedConditions.visibilityOfAllElements(elements));
+    public RemoteWebElement waitUntilElementVisibilityIsRefreshed(final WebElement element) {
+        return (RemoteWebElement) wait.until(ExpectedConditions.refreshed(ExpectedConditions.visibilityOf(element)));
     }
-    public void waitUntilPresenceOfElement(final By locator) {
-        wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+    public boolean waitUntilInvisibilityOfElement(final WebElement element) {
+        return wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(element)));
     }
-    public void waitUntilInvisibilityOfElement(final By locator) {
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+    public RemoteWebElement waitUntilElementIsClickable(final WebElement element) {
+        return (RemoteWebElement) wait.until(ExpectedConditions.elementToBeClickable(waitUntilVisibilityOfElement(element)));
     }
-    public void waitUntilElementIsClickable(final WebElement element) {
-        wait.until(ExpectedConditions.elementToBeClickable(element));
+    public boolean waitUntilTextIsPresentInElement(final WebElement element, final String text) {
+        return wait.until(ExpectedConditions.textToBePresentInElement(waitUntilVisibilityOfElement(element), text));
     }
-    public void waitUntilElementIsClickable(final By locator) {
-        wait.until(ExpectedConditions.elementToBeClickable(locator));
+    public boolean waitUntilElementIsSelected(final WebElement element, boolean state) {
+        return wait.until(ExpectedConditions.elementSelectionStateToBe(waitUntilVisibilityOfElement(element), state));
     }
+    public boolean waitUntilElementIsSelected(final WebElement element) {
+        return wait.until(ExpectedConditions.elementToBeSelected(waitUntilVisibilityOfElement(element)));
+    }
+    public boolean waitUntilInvisibilityOfAllElements(final List<WebElement> elements) {
+        return wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOfAllElements(elements)));
+    }
+    public List<WebElement> waitUntilVisibilityOfAllElements(final By identifier) {
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(identifier));
+    }
+
 
     /*
         custom element finders
      */
-    public WebElement findWebElement(final List<WebElement> elementList, final String string) {
-        waitUntilVisibilityOfAllElements(elementList);
-        for (WebElement element : elementList) {
-            if (element.getText().equalsIgnoreCase(string)) return element;
-        }
+    public RemoteWebElement findWebElementWithMatchingString(final By identifier, final String string) {
+        for (WebElement element : waitUntilVisibilityOfAllElements(identifier)) {
+            if (element.getText().equalsIgnoreCase(string)) return (RemoteWebElement) element;
+        }        
         return null;
     }
 
@@ -74,19 +83,17 @@ public class WebDriverService {
         custom element actions
      */
     public void click(final WebElement element) {
-        waitUntilElementIsClickable(element);
-        element.click();
+        waitUntilVisibilityOfElement(element).click();
     }
     public void sendKeys(final WebElement element, final String value) {
-        waitUntilVisibilityOfElement(element);
-        if (!element.getAttribute("value").isEmpty())
-            element.clear();
+        WebElement webElement = waitUntilVisibilityOfElement(element);
+        if (!webElement.getAttribute("value").isEmpty())
+            webElement.clear();
 
-        element.sendKeys(value);
+        webElement.sendKeys(value);
     }
     public void selectByVisibleText(final WebElement element, final String visibleText) {
-        waitUntilVisibilityOfElement(element);
-        Select select = new Select(element);
+        Select select = new Select(waitUntilVisibilityOfElement(element));
         select.selectByVisibleText(visibleText);
     }
     public void navigateTo(String url) {
