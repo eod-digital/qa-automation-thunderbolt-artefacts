@@ -102,4 +102,26 @@ public class WebDriverService {
     public void maximiseWindow() {
         driver.manage().window().maximize();
     }
+    
+    private void waitForNewWindowToOpen() {
+        new WebDriverWait(webDriver, Integer.valueOf(PropertiesUtil.getWebDriverWaitTime())) {
+        }.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return (driver.getWindowHandles().size() > 1);
+            }
+        });
+    }
+    
+public void switchToNewWindow() {
+        mainWindowHandle = webDriver.getWindowHandle();
+        waitForNewWindowToOpen();
+        for (String windowHandle : webDriver.getWindowHandles()) {
+            webDriver.switchTo().window(windowHandle);
+        }
+    }
+
+    public void switchToMainWindow() {
+        webDriver.switchTo().window(mainWindowHandle);
+    }
 }
