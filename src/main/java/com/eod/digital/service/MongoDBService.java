@@ -1,8 +1,8 @@
-package service;
+package com.eod.digital.service;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
-import util.PropertiesUtil;
+import com.eod.digital.util.PropertiesUtil;
 
 public class MongoDBService {
     private Mongo mongo;
